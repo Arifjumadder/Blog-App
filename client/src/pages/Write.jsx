@@ -1,117 +1,163 @@
-import React, { useState } from 'react'
-import { navigate,useLocation, useNavigate } from 'react-router-dom'
-
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import React, { useContext, useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import ReactQuill from "react-quill"
+import "react-quill/dist/quill.snow.css"
 import axios from "axios"
-import moment from "moment";
+import { AuthContext } from "../context/authContext"
 
 const Write = () => {
+  // When navigating here from the Edit button on a post, the full post
+  // object is passed as router state. Its presence means "editing".
   const state = useLocation().state
-  const [value, setValue] = useState(state?.title || "");
-  const [title, setTitle] = useState(state?.desc || "");
-  const [file, setFile] = useState(null);
-  const [cat, setCat] = useState(state?.cat || "");
+  const isEditing = Boolean(state?.id)
 
-  const navigate=useNavigate()
+  const { currentUser } = useContext(AuthContext)
+  const navigate = useNavigate()
+
+  const [title, setTitle] = useState(state?.title || "")
+  const [content, setContent] = useState(state?.desc || "")
+  const [file, setFile] = useState(null)
+  const [catId, setCatId] = useState(state?.catId || "")
+  const [categories, setCategories] = useState([])
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState("")
+
+  useEffect(() => {
+    if (!currentUser) navigate("/login")
+  }, [currentUser, navigate])
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get("/api/categories")
+        setCategories(res.data)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    fetchCategories()
+  }, [])
 
   const upload = async () => {
+    const formData = new FormData()
+    formData.append("file", file)
+    const res = await axios.post("/api/upload", formData)
+    return res.data
+  }
+
+  const save = async (status) => {
+    setError("")
+    if (!title.trim() || !content.trim()) {
+      setError("Title and content are both required.")
+      return
+    }
+
+    setSaving(true)
     try {
-      const formData = new FormData();
-      formData.append("file", file)
-      const res = await axios.post("/api/upload", formData)
-      return res.data
+      const imgUrl = file ? await upload() : state?.img || ""
 
+      const payload = {
+        title,
+        desc: content,
+        img: imgUrl,
+        catId: catId || null,
+        status,
+      }
+
+      if (isEditing) {
+        await axios.put(`/api/posts/${state.id}`, payload)
+        navigate(`/post/${state.slug || state.id}`)
+      } else {
+        const res = await axios.post("/api/posts", payload)
+        navigate(`/post/${res.data.slug}`)
+      }
     } catch (err) {
-      console.log(err)
-
+      console.error(err)
+      const serverMsg = err.response?.data
+      if (typeof serverMsg === "string") setError(serverMsg)
+      else if (serverMsg?.sqlMessage) setError(serverMsg.sqlMessage)
+      else if (serverMsg?.message) setError(serverMsg.message)
+      else if (err.message) setError(err.message)
+      else setError("Something went wrong.")
+    } finally {
+      setSaving(false)
     }
   }
 
-  const handleClick = async e => {
-    e.preventDefault();
-    const imgUrl = await upload()
-
-    try {
-      state ? await axios.put(`/api/posts/${state.id}`, {
-        title, desc: value, cat, img: file ? imgUrl : ""
-      }) : await axios.post(`/api/posts/`, {
-        title, desc: value, cat, img: file ? imgUrl : "",
-        date:moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
-      });
-
-      navigate("/")
-    
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-
-
   return (
-    <div className='add'>
-      <div className="content">
-        <input type="text" value={title} placeholder='Title' onChange={e => setTitle(e.target.value)} />
-        <div className="editorContainer">
-          <ReactQuill
-            className="editor"
-            theme="snow"
-            value={value}
-            onChange={setValue}
+    <div className="max-w-5xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-8">
+      <div className="flex flex-col gap-4">
+        <input
+          type="text"
+          value={title}
+          placeholder="Title"
+          onChange={(e) => setTitle(e.target.value)}
+          className="text-3xl font-bold outline-none border-b border-gray-200 pb-3 placeholder:text-gray-300"
+        />
+        <div className="min-h-[420px]">
+          <ReactQuill theme="snow" value={content} onChange={setContent} className="h-[350px] mb-12" />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-6">
+        <div className="border border-gray-200 rounded-lg p-4 flex flex-col gap-3">
+          <h2 className="font-semibold text-lg">Publish</h2>
+          <span className="text-sm text-gray-500">
+            <b>Status:</b> {isEditing ? state.status : "Draft"}
+          </span>
+
+          <input
+            style={{ display: "none" }}
+            type="file"
+            id="file"
+            onChange={(e) => setFile(e.target.files[0])}
           />
+          <label
+            htmlFor="file"
+            className="cursor-pointer text-center text-sm border border-brand-500 text-brand-600 rounded-md py-2 hover:bg-brand-50 transition"
+          >
+            {file ? file.name : "Upload cover image"}
+          </label>
+
+          {error && (
+            <p className="text-red-500 text-sm">
+              {typeof error === "string" ? error : "Something went wrong."}
+            </p>
+          )}
+
+          <div className="flex gap-2">
+            <button
+              disabled={saving}
+              onClick={() => save("draft")}
+              className="flex-1 border border-gray-300 rounded-md py-2 text-sm hover:bg-gray-50 disabled:opacity-50"
+            >
+              Save as draft
+            </button>
+            <button
+              disabled={saving}
+              onClick={() => save("published")}
+              className="flex-1 bg-brand-600 text-white rounded-md py-2 text-sm hover:bg-brand-700 disabled:opacity-50"
+            >
+              Publish
+            </button>
+          </div>
+        </div>
+
+        <div className="border border-gray-200 rounded-lg p-4 flex flex-col gap-2">
+          <h2 className="font-semibold text-lg">Category</h2>
+          {categories.map((c) => (
+            <label key={c.id} className="flex items-center gap-2 text-sm cursor-pointer">
+              <input
+                type="radio"
+                name="cat"
+                checked={Number(catId) === c.id}
+                onChange={() => setCatId(c.id)}
+              />
+              {c.name}
+            </label>
+          ))}
         </div>
       </div>
-      <div className="menu">
-        <div className="item">
-          <h1>Publish</h1>
-          <span>
-            <b>Status:</b> Draft
-          </span>
-          <span>
-            <b>Visibility:</b> Public
-          </span>
-          <input style={{ display: "none" }} type="file" name="" id="file" onChange={e => setFile(e.target.files[0])} />
-          <label className="file" htmlFor="file">Upload Image</label>
-          <div className="buttons">
-            <button>Save as a draft</button>
-            <button onClick={handleClick}>Publish</button>
-          </div>
-        </div>
-        <div className="item">
-          <h1>Category</h1>
-          <div className="cat">
-            <input type="radio" checked={cat === "art"} name="cat" value="art" id="art" onChange={e => setCat(e.target.value)} />
-            <label htmlFor="art">Art</label>
-          </div>
-
-          <div className="cat">
-            <input type="radio" checked={cat === "science"} name="cat" value="science" id="science" onChange={e => setCat(e.target.value)} />
-            <label htmlFor="science">Science</label>
-          </div>
-
-          <div className="cat">
-            <input type="radio" checked={cat === "technology"} name="cat" value="technology" id="technology" onChange={e => setCat(e.target.value)} />
-            <label htmlFor="art">Technology</label>
-          </div>
-
-          <div className="cat">
-            <input type="radio" checked={cat === "cinema"} name="cat" value="cinema" id="cinema" onChange={e => setCat(e.target.value)} />
-            <label htmlFor="cinema">Cinema</label>
-          </div>
-
-          <div className="cat">
-            <input type="radio" checked={cat === "design"} name="cat" value="design" id="design" onChange={e => setCat(e.target.value)} />
-            <label htmlFor="design">Design</label>
-          </div>
-
-          <div className="cat">
-            <input type="radio" checked={cat === "food"} name="cat" value="food" id="food" onChange={e => setCat(e.target.value)} />
-            <label htmlFor="food">Food</label>
-          </div>
-        </div>
-      </div>
-
     </div>
   )
 }

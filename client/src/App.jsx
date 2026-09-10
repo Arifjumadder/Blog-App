@@ -10,7 +10,8 @@ import Login from "./pages/Login"
 import Write from "./pages/Write"
 import Home from "./pages/Home"
 import Single from "./pages/Single"
-import "./style.scss"
+import Profile from "./pages/Profile"
+import AdminDashboard from "./pages/AdminDashboard"
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -46,6 +47,14 @@ const router = createBrowserRouter([
         path: "/write",
         element: <Write />
       },
+      {
+        path: "/profile/:username",
+        element: <Profile />
+      },
+      {
+        path: "/admin",
+        element: <AdminDashboard />
+      },
     ]
 
   },
@@ -64,15 +73,7 @@ const router = createBrowserRouter([
 
 
 function App() {
-  return (
-    <div className="app">
-      <div className="container">
-        <RouterProvider router={router} />
-      </div>
-    </div>
-
-
-  );
+  return <RouterProvider router={router} />;
 }
 
 

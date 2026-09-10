@@ -1,86 +1,114 @@
-import React, { useEffect, useState } from 'react'
-import Edit from '../img/edit.png'
-import Delete from '../img/delete.png'
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
-import Menu from "../components/Menu";
-import axios from 'axios';
+import React, { useContext, useEffect, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import Menu from "../components/Menu"
+import Comments from "../components/Comments"
+import PostActions from "../components/PostActions"
+import axios from 'axios'
 import moment from "moment"
-import { useContext } from "react";
-import { AuthContext } from "../context/authContext";
-
+import { AuthContext } from "../context/authContext"
 
 const Single = () => {
+  const [post, setPost] = useState(null)
+  const [notFound, setNotFound] = useState(false)
+  const { id: postId } = useParams()
+  const navigate = useNavigate()
+  const { currentUser } = useContext(AuthContext)
 
-    const [post, setPost] = useState({})
-    const location = useLocation();
-    const navigate = useNavigate();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`/api/posts/${postId}`)
+        setPost(res.data)
+        setNotFound(false)
+      } catch (err) {
+        console.log(err)
+        setNotFound(true)
+      }
+    }
+    fetchData()
+  }, [postId])
 
-    const postId = location.pathname.split("/")[2]
-    const { currentUser } = useContext(AuthContext);
+  const handleDelete = async () => {
+    if (!window.confirm("Delete this post? This cannot be undone.")) return
+    try {
+      await axios.delete(`/api/posts/${post.id}`)
+      navigate("/")
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await axios.get(`/api/posts/${postId}`)
-                setPost(res.data);
-
-            } catch (err) {
-                console.log(err)
-
-            }
-
-        };
-        fetchData()
-    }, [postId])
-
-    const handleDelete = async () => {
-        try {
-             await axios.delete(`/api/posts/${postId}`)
-            Navigate("/")
-
-        } catch (err) {
-            console.log(err)
-
-        }
-
-   
-
-}
-
- const getText =(html)=>{
-    const doc=new DOMParser().parseFromString(html,"text/html")
+  const getText = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html")
     return doc.body.textContent
   }
 
+  if (notFound) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-16 text-center text-gray-500">
+        Post not found (it may have been removed, or is still a draft).
+      </div>
+    )
+  }
 
-return (
-    <div className='single'>
-        <div className="content">
-            <img src={`../upload/${post?.img}`} alt="" />
-            <div className="user">
-                {post.userImg && <img src={post.userImg} alt="" />}
-                <div className="info">
-                    <span>{post.username}</span>
-                    <p>Posted {moment(post.date).fromNow()}</p>
+  if (!post) {
+    return <div className="max-w-3xl mx-auto px-4 py-16 text-center text-gray-400">Loading…</div>
+  }
 
-                </div>
+  const isOwner = currentUser?.id === post.uid
 
-                {currentUser?.username === post.username && (
-                     <div className="edit">
-                    <Link to={`/write?edit=2`} state={post}>
-                        <img src={Edit} alt="" />
-                    </Link>
+  return (
+    <div className="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-10">
+      <div className="flex flex-col gap-5">
+        {post.status === "draft" && (
+          <span className="w-fit text-xs font-semibold uppercase tracking-wide bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full">
+            Draft — only visible to you
+          </span>
+        )}
 
-                    <img onClick={handleDelete} src={Delete} alt="" />
-                </div>
-            )}
+        {post.img && (
+          <img src={post.img} alt={post.title} className="w-full rounded-xl object-cover max-h-[420px]" />
+        )}
+
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link to={`/profile/${post.username}`}>
+              {post.userImg && (
+                <img src={post.userImg} alt="" className="w-10 h-10 rounded-full object-cover" />
+              )}
+            </Link>
+            <div>
+              <Link to={`/profile/${post.username}`} className="font-medium block hover:text-brand-600">
+                {post.username}
+              </Link>
+              <p className="text-xs text-gray-400">Posted {moment(post.created_at).fromNow()}</p>
             </div>
-            <h1>{post.title}</h1>
-           {getText(post.desc)}
+          </div>
+
+          {isOwner && (
+            <div className="flex gap-3">
+              <Link to="/write" state={post} className="text-sm text-brand-600 hover:underline">
+                Edit
+              </Link>
+              <button onClick={handleDelete} className="text-sm text-red-500 hover:underline">
+                Delete
+              </button>
+            </div>
+          )}
         </div>
-        <Menu cat={post.cat} />
+
+        <h1 className="text-3xl font-bold">{post.title}</h1>
+        <PostActions postId={post.id} />
+        <div className="prose max-w-none text-gray-700 leading-relaxed whitespace-pre-line">
+          {getText(post.desc)}
+        </div>
+
+        <Comments postId={post.id} />
+      </div>
+
+      <Menu catSlug={post.catSlug} excludeId={post.id} />
     </div>
-)
+  )
 }
 
 export default Single
