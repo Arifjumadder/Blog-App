@@ -42,10 +42,17 @@ export const login = (req, res) => {
     );
     const { password, ...other } = data[0];
 
+    // In production the frontend and backend are on different domains
+    // (Vercel + Render), so the cookie needs sameSite:"none" + secure:true
+    // to be sent cross-site. Locally (plain http://localhost) "lax" +
+    // non-secure is what actually works, since "none" requires https.
+    const isProd = process.env.NODE_ENV === "production";
+
     res
       .cookie("access_token", token, {
         httpOnly: true,
-        sameSite: "lax",
+        secure: isProd,
+        sameSite: isProd ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       })
       .status(200)
@@ -54,9 +61,11 @@ export const login = (req, res) => {
 };
 
 export const logout = (req, res) => {
+  const isProd = process.env.NODE_ENV === "production";
   res
     .clearCookie("access_token", {
-      sameSite: "lax",
+      sameSite: isProd ? "none" : "lax",
+      secure: isProd,
     })
     .status(200)
     .json("User has been logged out.");

@@ -1,6 +1,7 @@
 import express from "express"
 import dotenv from "dotenv"
 import cookieParser from "cookie-parser"
+import cors from "cors"
 
 import authRoutes from "./routes/auth.js"
 import userRoutes from "./routes/users.js"
@@ -15,6 +16,16 @@ import uploadRoutes from "./routes/upload.js"
 dotenv.config()
 
 const app = express()
+
+// In production the frontend (Vercel) and backend (Render) live on
+// different domains, so the browser needs explicit permission to send
+// requests with credentials (the auth cookie) across origins.
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    credentials: true,
+  })
+)
 
 app.use(express.json())
 app.use(cookieParser())
