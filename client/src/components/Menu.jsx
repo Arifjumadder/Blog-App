@@ -24,7 +24,7 @@ const Menu = ({ catSlug, excludeId }) => {
   if (!posts.length) return null
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-sm p-4 h-fit">
       <h2 className="font-semibold text-lg">Related posts</h2>
       {posts.map((post) => (
         <Link

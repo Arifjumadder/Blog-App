@@ -5,8 +5,8 @@ import moment from 'moment'
 import { AuthContext } from '../context/authContext'
 
 const STATUS_BADGE = {
-  draft: "bg-amber-100 text-amber-700",
-  published: "bg-emerald-100 text-emerald-700",
+  draft: "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400",
+  published: "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400",
 }
 
 const Profile = () => {
@@ -111,45 +111,45 @@ const Profile = () => {
   }
 
   if (notFound) {
-    return <div className="max-w-4xl mx-auto px-4 py-16 text-center text-gray-500">User not found.</div>
+    return <div className="max-w-4xl mx-auto px-4 py-16 text-center text-slate-500 dark:text-slate-400">User not found.</div>
   }
   if (!profile) {
-    return <div className="max-w-4xl mx-auto px-4 py-16 text-center text-gray-400">Loading…</div>
+    return <div className="max-w-4xl mx-auto px-4 py-16 text-center text-slate-400 dark:text-slate-500">Loading…</div>
   }
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="flex items-start gap-5 border-b border-gray-100 pb-6">
+      <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-5 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
         {profile.img ? (
           <img
             src={profile.img}
             alt={profile.username}
-            className="w-20 h-20 rounded-full object-cover bg-gray-100"
+            className="w-20 h-20 rounded-full object-cover bg-slate-100 dark:bg-slate-800 shrink-0"
           />
         ) : (
-          <div className="w-20 h-20 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center text-2xl font-semibold shrink-0">
+          <div className="w-20 h-20 rounded-full bg-brand-100 dark:bg-brand-900 text-brand-700 dark:text-brand-300 flex items-center justify-center text-2xl font-semibold shrink-0">
             {profile.username[0].toUpperCase()}
           </div>
         )}
         <div className="flex-1">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center sm:justify-start gap-3">
             <h1 className="text-2xl font-bold">{profile.username}</h1>
             {profile.role === "admin" && (
-              <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Admin</span>
+              <span className="text-xs bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400 px-2 py-0.5 rounded-full">Admin</span>
             )}
           </div>
-          <p className="text-sm text-gray-400 mt-0.5">
+          <p className="text-sm text-slate-400 dark:text-slate-500 mt-0.5">
             Joined {moment(profile.created_at).format("MMMM YYYY")} · {profile.postCount} posts
           </p>
 
           {!editing && (
-            <p className="text-gray-600 mt-2 whitespace-pre-line">{profile.bio || "No bio yet."}</p>
+            <p className="text-slate-600 dark:text-slate-300 mt-2 whitespace-pre-line">{profile.bio || "No bio yet."}</p>
           )}
 
           {isOwnProfile && !editing && (
             <button
               onClick={() => setEditing(true)}
-              className="mt-3 text-sm border border-gray-300 rounded-md px-3 py-1.5 hover:bg-gray-50"
+              className="mt-3 text-sm border border-slate-300 dark:border-slate-600 rounded-md px-3 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-900"
             >
               Edit profile
             </button>
@@ -162,7 +162,7 @@ const Profile = () => {
                 onChange={(e) => setBio(e.target.value)}
                 placeholder="Write something about yourself..."
                 rows={3}
-                className="border border-gray-200 rounded-md px-3 py-2 text-sm outline-none focus:border-brand-400"
+                className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-md px-3 py-2 text-sm outline-none focus:border-brand-400"
               />
               <input type="file" onChange={(e) => setFile(e.target.files[0])} className="text-sm" />
               {error && <p className="text-red-500 text-sm">{error}</p>}
@@ -176,7 +176,7 @@ const Profile = () => {
                 </button>
                 <button
                   onClick={() => { setEditing(false); setBio(profile.bio || ""); setFile(null) }}
-                  className="text-sm border border-gray-300 px-4 py-1.5 rounded-md hover:bg-gray-50"
+                  className="text-sm border border-slate-300 dark:border-slate-600 px-4 py-1.5 rounded-md hover:bg-slate-50 dark:hover:bg-slate-900"
                 >
                   Cancel
                 </button>
@@ -187,16 +187,16 @@ const Profile = () => {
       </div>
 
       {isOwnProfile && (
-        <div className="flex gap-4 border-b border-gray-100 mt-4">
+        <div className="flex gap-4 border-b border-slate-100 dark:border-slate-800 mt-4">
           <button
             onClick={() => setTab("posts")}
-            className={`pb-2 text-sm font-medium ${tab === "posts" ? "border-b-2 border-brand-600 text-brand-600" : "text-gray-400"}`}
+            className={`pb-2 text-sm font-medium ${tab === "posts" ? "border-b-2 border-brand-600 text-brand-600 dark:text-brand-400" : "text-slate-400 dark:text-slate-500"}`}
           >
             My Posts
           </button>
           <button
             onClick={() => setTab("saved")}
-            className={`pb-2 text-sm font-medium ${tab === "saved" ? "border-b-2 border-brand-600 text-brand-600" : "text-gray-400"}`}
+            className={`pb-2 text-sm font-medium ${tab === "saved" ? "border-b-2 border-brand-600 text-brand-600 dark:text-brand-400" : "text-slate-400 dark:text-slate-500"}`}
           >
             Saved
           </button>
@@ -204,25 +204,25 @@ const Profile = () => {
       )}
 
       {(!isOwnProfile || tab === "posts") && (
-        <div className="flex flex-col gap-4 mt-6">
-          {!posts.length && <p className="text-gray-400 text-center py-8">No posts yet.</p>}
+        <div className="flex flex-col gap-3 mt-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-sm p-4">
+          {!posts.length && <p className="text-slate-400 dark:text-slate-500 text-center py-8">No posts yet.</p>}
           {posts.map((post) => (
-            <div key={post.id} className="flex items-center justify-between border-b border-gray-50 pb-4">
-              <div className="flex items-center gap-3">
+            <div key={post.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-100 dark:border-slate-800 last:border-0 pb-3 last:pb-0">
+              <div className="flex items-center gap-3 min-w-0">
                 {isOwnProfile && (
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_BADGE[post.status]}`}>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${STATUS_BADGE[post.status]}`}>
                     {post.status}
                   </span>
                 )}
-                <Link to={`/post/${post.slug}`} className="font-medium hover:text-brand-600 transition">
+                <Link to={`/post/${post.slug}`} className="font-medium hover:text-brand-600 dark:hover:text-brand-400 transition truncate">
                   {post.title}
                 </Link>
               </div>
-              <div className="flex items-center gap-3 text-sm text-gray-400">
+              <div className="flex items-center gap-3 text-sm text-slate-400 dark:text-slate-500 shrink-0">
                 <span>{moment(post.created_at).fromNow()}</span>
                 {isOwnProfile && (
                   <>
-                    <Link to="/write" state={post} className="text-brand-600 hover:underline">
+                    <Link to="/write" state={post} className="text-brand-600 dark:text-brand-400 hover:underline">
                       Edit
                     </Link>
                     <button onClick={() => handleDeletePost(post.id)} className="text-red-500 hover:underline">
@@ -237,14 +237,14 @@ const Profile = () => {
       )}
 
       {isOwnProfile && tab === "saved" && (
-        <div className="flex flex-col gap-4 mt-6">
-          {!saved.length && <p className="text-gray-400 text-center py-8">No saved posts yet.</p>}
+        <div className="flex flex-col gap-3 mt-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-sm p-4">
+          {!saved.length && <p className="text-slate-400 dark:text-slate-500 text-center py-8">No saved posts yet.</p>}
           {saved.map((post) => (
-            <div key={post.id} className="flex items-center justify-between border-b border-gray-50 pb-4">
-              <Link to={`/post/${post.slug}`} className="font-medium hover:text-brand-600 transition">
+            <div key={post.id} className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 last:border-0 pb-3 last:pb-0">
+              <Link to={`/post/${post.slug}`} className="font-medium hover:text-brand-600 dark:hover:text-brand-400 transition">
                 {post.title}
               </Link>
-              <span className="text-sm text-gray-400">by {post.username}</span>
+              <span className="text-sm text-slate-400 dark:text-slate-500">by {post.username}</span>
             </div>
           ))}
         </div>

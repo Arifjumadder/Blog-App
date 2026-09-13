@@ -1,3 +1,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200;
+}
+
+/* react-quill ships its own light-only theme, so it needs manual dark overrides */
+.dark .ql-toolbar.ql-snow {
+  background-color: theme('colors.slate.900');
+  border-color: theme('colors.slate.700');
+}
+.dark .ql-container.ql-snow {
+  border-color: theme('colors.slate.700');
+  background-color: theme('colors.slate.900');
+  color: theme('colors.slate.100');
+}
+.dark .ql-snow .ql-stroke {
+  stroke: theme('colors.slate.300');
+}
+.dark .ql-snow .ql-fill {
+  fill: theme('colors.slate.300');
+}
+.dark .ql-snow .ql-picker {
+  color: theme('colors.slate.300');
+}
+.dark .ql-editor.ql-blank::before {
+  color: theme('colors.slate.500');
+}

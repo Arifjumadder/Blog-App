@@ -55,17 +55,17 @@ const CommentItem = ({ comment, childrenMap, postId, currentUser, onReplyAdded, 
         {comment.userImg ? (
           <img src={comment.userImg} alt="" className="w-8 h-8 rounded-full object-cover shrink-0" />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-gray-200 shrink-0" />
+          <div className="w-8 h-8 rounded-full bg-slate-200 shrink-0" />
         )}
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <span className="font-medium text-sm">{comment.username}</span>
-            <span className="text-xs text-gray-400">{moment(comment.created_at).fromNow()}</span>
+            <span className="text-xs text-slate-400 dark:text-slate-500">{moment(comment.created_at).fromNow()}</span>
           </div>
-          <p className="text-sm text-gray-700 mt-0.5">{comment.content}</p>
+          <p className="text-sm text-slate-700 dark:text-slate-300 mt-0.5">{comment.content}</p>
           <div className="flex gap-3 mt-1">
             {currentUser && (
-              <button onClick={() => setReplying(!replying)} className="text-xs text-brand-600 hover:underline">
+              <button onClick={() => setReplying(!replying)} className="text-xs text-brand-600 dark:text-brand-400 hover:underline">
                 Reply
               </button>
             )}
@@ -82,7 +82,7 @@ const CommentItem = ({ comment, childrenMap, postId, currentUser, onReplyAdded, 
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
                 placeholder={`Reply to ${comment.username}...`}
-                className="flex-1 border border-gray-200 rounded-md px-3 py-1.5 text-sm outline-none focus:border-brand-400"
+                className="flex-1 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-md px-3 py-1.5 text-sm outline-none focus:border-brand-400"
               />
               <button
                 disabled={submitting}
@@ -191,7 +191,7 @@ const Comments = ({ postId }) => {
   }
 
   return (
-    <div className="mt-10 border-t border-gray-100 pt-6">
+    <div className="mt-10 border-t border-slate-100 dark:border-slate-800 pt-6">
       <h2 className="font-semibold text-lg mb-3">Comments ({comments.length})</h2>
 
       {currentUser ? (
@@ -200,7 +200,7 @@ const Comments = ({ postId }) => {
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Write a comment..."
-            className="flex-1 border border-gray-200 rounded-md px-3 py-2 text-sm outline-none focus:border-brand-400"
+            className="flex-1 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-md px-3 py-2 text-sm outline-none focus:border-brand-400"
           />
           <button
             disabled={submitting}
@@ -211,7 +211,7 @@ const Comments = ({ postId }) => {
           </button>
         </div>
       ) : (
-        <p className="text-sm text-gray-400">Log in to leave a comment.</p>
+        <p className="text-sm text-slate-400 dark:text-slate-500">Log in to leave a comment.</p>
       )}
 
       <div>

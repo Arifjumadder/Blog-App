@@ -45,14 +45,14 @@ const Single = () => {
 
   if (notFound) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-16 text-center text-gray-500">
+      <div className="max-w-3xl mx-auto px-4 py-16 text-center text-slate-500 dark:text-slate-400">
         Post not found (it may have been removed, or is still a draft).
       </div>
     )
   }
 
   if (!post) {
-    return <div className="max-w-3xl mx-auto px-4 py-16 text-center text-gray-400">Loading…</div>
+    return <div className="max-w-3xl mx-auto px-4 py-16 text-center text-slate-400 dark:text-slate-500">Loading…</div>
   }
 
   const isOwner = currentUser?.id === post.uid
@@ -61,13 +61,13 @@ const Single = () => {
     <div className="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-10">
       <div className="flex flex-col gap-5">
         {post.status === "draft" && (
-          <span className="w-fit text-xs font-semibold uppercase tracking-wide bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full">
+          <span className="w-fit text-xs font-semibold uppercase tracking-wide bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 px-2.5 py-1 rounded-full">
             Draft — only visible to you
           </span>
         )}
 
         {post.img && (
-          <img src={post.img} alt={post.title} className="w-full rounded-xl object-cover max-h-[420px]" />
+          <img src={post.img} alt={post.title} className="w-full rounded-xl object-cover max-h-[420px] shadow-sm" />
         )}
 
         <div className="flex items-center justify-between">
@@ -78,16 +78,16 @@ const Single = () => {
               )}
             </Link>
             <div>
-              <Link to={`/profile/${post.username}`} className="font-medium block hover:text-brand-600">
+              <Link to={`/profile/${post.username}`} className="font-medium block hover:text-brand-600 dark:hover:text-brand-400">
                 {post.username}
               </Link>
-              <p className="text-xs text-gray-400">Posted {moment(post.created_at).fromNow()}</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500">Posted {moment(post.created_at).fromNow()}</p>
             </div>
           </div>
 
           {isOwner && (
             <div className="flex gap-3">
-              <Link to="/write" state={post} className="text-sm text-brand-600 hover:underline">
+              <Link to="/write" state={post} className="text-sm text-brand-600 dark:text-brand-400 hover:underline">
                 Edit
               </Link>
               <button onClick={handleDelete} className="text-sm text-red-500 hover:underline">
@@ -99,7 +99,7 @@ const Single = () => {
 
         <h1 className="text-3xl font-bold">{post.title}</h1>
         <PostActions postId={post.id} />
-        <div className="prose max-w-none text-gray-700 leading-relaxed whitespace-pre-line">
+        <div className="prose max-w-none text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
           {getText(post.desc)}
         </div>
 

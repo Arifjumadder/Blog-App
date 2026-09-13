@@ -33,8 +33,8 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-brand-50 px-4">
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-8 w-full max-w-sm flex flex-col gap-4">
+    <div className="min-h-screen flex items-center justify-center bg-brand-50 dark:bg-slate-950 px-4">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900 rounded-xl shadow-sm p-8 w-full max-w-sm flex flex-col gap-4">
         <h1 className="text-2xl font-bold text-brand-700 text-center">Register</h1>
 
         <input
@@ -43,7 +43,7 @@ const Register = () => {
           placeholder="Username"
           name="username"
           onChange={handleChange}
-          className="border border-gray-200 rounded-md px-3 py-2 text-sm outline-none focus:border-brand-400"
+          className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-md px-3 py-2 text-sm outline-none focus:border-brand-400"
         />
         <input
           required
@@ -51,7 +51,7 @@ const Register = () => {
           placeholder="Email"
           name="email"
           onChange={handleChange}
-          className="border border-gray-200 rounded-md px-3 py-2 text-sm outline-none focus:border-brand-400"
+          className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-md px-3 py-2 text-sm outline-none focus:border-brand-400"
         />
         <input
           required
@@ -59,7 +59,7 @@ const Register = () => {
           placeholder="Password"
           name="password"
           onChange={handleChange}
-          className="border border-gray-200 rounded-md px-3 py-2 text-sm outline-none focus:border-brand-400"
+          className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-md px-3 py-2 text-sm outline-none focus:border-brand-400"
         />
 
         <button
@@ -72,8 +72,8 @@ const Register = () => {
 
         {err && <p className="text-red-500 text-sm text-center">{typeof err === "string" ? err : "Registration failed."}</p>}
 
-        <span className="text-sm text-gray-500 text-center">
-          Already have an account? <Link to="/login" className="text-brand-600 hover:underline">Login</Link>
+        <span className="text-sm text-slate-500 dark:text-slate-400 text-center">
+          Already have an account? <Link to="/login" className="text-brand-600 dark:text-brand-400 hover:underline">Login</Link>
         </span>
       </form>
     </div>

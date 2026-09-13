@@ -54,7 +54,7 @@ const PostActions = ({ postId }) => {
         disabled={!currentUser}
         title={currentUser ? "" : "Log in to like"}
         className={`flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border transition disabled:opacity-50 disabled:cursor-not-allowed ${
-          liked ? "bg-red-50 border-red-300 text-red-600" : "border-gray-200 text-gray-600 hover:bg-gray-50"
+          liked ? "bg-red-50 dark:bg-red-950 border-red-300 dark:border-red-800 text-red-600 dark:text-red-400" : "border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900"
         }`}
       >
         <span>{liked ? "♥" : "♡"}</span> {likeCount}
@@ -65,7 +65,7 @@ const PostActions = ({ postId }) => {
         disabled={!currentUser}
         title={currentUser ? "" : "Log in to bookmark"}
         className={`flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border transition disabled:opacity-50 disabled:cursor-not-allowed ${
-          bookmarked ? "bg-brand-50 border-brand-300 text-brand-600" : "border-gray-200 text-gray-600 hover:bg-gray-50"
+          bookmarked ? "bg-brand-50 dark:bg-brand-950 border-brand-300 dark:border-brand-800 text-brand-600 dark:text-brand-400" : "border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900"
         }`}
       >
         {bookmarked ? "🔖 Saved" : "🔖 Save"}

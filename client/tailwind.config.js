@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: "class",
   content: [
     "./index.html",
     "./src/**/*.{js,jsx}",
@@ -8,16 +9,17 @@ export default {
     extend: {
       colors: {
         brand: {
-          50: "#eef4ff",
-          100: "#d9e6ff",
-          200: "#b3ccff",
-          300: "#82abff",
-          400: "#4f82ff",
-          500: "#2660ff",
-          600: "#1445e0",
-          700: "#1236b0",
-          800: "#122f8c",
-          900: "#132c70",
+          50: "#eef2ff",
+          100: "#e0e7ff",
+          200: "#c7d2fe",
+          300: "#a5b4fc",
+          400: "#818cf8",
+          500: "#6366f1",
+          600: "#4f46e5",
+          700: "#4338ca",
+          800: "#3730a3",
+          900: "#312e81",
+          950: "#1e1b4b",
         },
       },
       fontFamily: {

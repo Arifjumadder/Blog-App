@@ -51,7 +51,7 @@ const Home = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-slate-500 dark:text-slate-400">
           {search && <>Search results for &ldquo;{search}&rdquo; · </>}
           {cat && <>Category: {cat} · </>}
           {pagination.total} post{pagination.total !== 1 ? "s" : ""}
@@ -60,7 +60,7 @@ const Home = () => {
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
-          className="border border-gray-200 rounded-md px-2 py-1.5 text-sm outline-none"
+          className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-md px-2 py-1.5 text-sm outline-none"
         >
           <option value="newest">Newest</option>
           <option value="oldest">Oldest</option>
@@ -70,19 +70,22 @@ const Home = () => {
       </div>
 
       {loading ? (
-        <div className="text-center text-gray-400 py-16">Loading…</div>
+        <div className="text-center text-slate-400 dark:text-slate-500 py-16">Loading…</div>
       ) : !posts.length ? (
-        <div className="text-center text-gray-400 py-16">No posts found.</div>
+        <div className="text-center text-slate-400 dark:text-slate-500 py-16">No posts found.</div>
       ) : (
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-5">
           {posts.map((post) => (
-            <article key={post.id} className="flex flex-col md:flex-row gap-6 border-b border-gray-100 pb-8">
+            <article
+              key={post.id}
+              className="flex flex-col md:flex-row gap-6 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl p-4 md:p-5 hover:shadow-md dark:hover:shadow-black/30 transition-shadow"
+            >
               {post.img && (
                 <Link to={`/post/${post.slug}`} className="md:w-64 shrink-0">
                   <img
                     src={post.img}
                     alt={post.title}
-                    className="w-full h-48 md:h-full object-cover rounded-xl"
+                    className="w-full h-48 md:h-full object-cover rounded-lg"
                   />
                 </Link>
               )}
@@ -90,16 +93,16 @@ const Home = () => {
                 {post.catName && (
                   <Link
                     to={`/?cat=${post.catSlug}`}
-                    className="text-xs font-semibold uppercase tracking-wide text-brand-600 w-fit"
+                    className="text-xs font-semibold uppercase tracking-wide text-brand-600 dark:text-brand-400 w-fit"
                   >
                     {post.catName}
                   </Link>
                 )}
                 <Link to={`/post/${post.slug}`}>
-                  <h1 className="text-2xl font-bold hover:text-brand-600 transition">{post.title}</h1>
+                  <h1 className="text-2xl font-bold hover:text-brand-600 dark:hover:text-brand-400 transition">{post.title}</h1>
                 </Link>
-                <p className="text-gray-500 line-clamp-3">{getText(post.desc)}</p>
-                <div className="flex items-center gap-3 text-sm text-gray-400 mt-1">
+                <p className="text-slate-500 dark:text-slate-400 line-clamp-3">{getText(post.desc)}</p>
+                <div className="flex items-center gap-3 text-sm text-slate-400 dark:text-slate-500 mt-1">
                   <span>{post.username}</span>
                   <span>·</span>
                   <span>{moment(post.created_at).fromNow()}</span>
@@ -110,7 +113,7 @@ const Home = () => {
                 </div>
                 <Link
                   to={`/post/${post.slug}`}
-                  className="text-sm font-medium text-brand-600 hover:underline w-fit mt-1"
+                  className="text-sm font-medium text-brand-600 dark:text-brand-400 hover:underline w-fit mt-1"
                 >
                   Read more →
                 </Link>
@@ -125,17 +128,17 @@ const Home = () => {
           <button
             disabled={page <= 1}
             onClick={() => setPage((p) => p - 1)}
-            className="px-3 py-1.5 text-sm border border-gray-200 rounded-md disabled:opacity-40"
+            className="px-3 py-1.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-md disabled:opacity-40"
           >
             ← Prev
           </button>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-slate-500 dark:text-slate-400">
             Page {pagination.page} of {pagination.totalPages}
           </span>
           <button
             disabled={page >= pagination.totalPages}
             onClick={() => setPage((p) => p + 1)}
-            className="px-3 py-1.5 text-sm border border-gray-200 rounded-md disabled:opacity-40"
+            className="px-3 py-1.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-md disabled:opacity-40"
           >
             Next →
           </button>
